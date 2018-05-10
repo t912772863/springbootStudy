@@ -1,8 +1,10 @@
 package com.tian.dao.mapper;
 
 import com.tian.dao.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
+// 这里直接添加一个mapper注解, 就表是这是一个mapper接口, 就不用再添加扫描路径了
+@Mapper
 public interface UserMapper {
     int deleteByPrimaryKey(Long id);
 

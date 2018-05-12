@@ -6,7 +6,7 @@
 	<groupId>com.tian</groupId>
 	<artifactId>springbootstudy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>springbootstudy</name>
 	<description>Demo project for Spring Boot</description>
@@ -46,6 +46,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-redis</artifactId>
+			<version>1.4.7.RELEASE</version>
 		</dependency>
 
 		<dependency>

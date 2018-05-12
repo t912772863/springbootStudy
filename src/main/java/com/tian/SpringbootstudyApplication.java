@@ -11,6 +11,8 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -45,7 +47,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @EnableJms
 @EnableCaching
 //@EnableAspectJAutoProxy
-public class SpringbootstudyApplication {
+public class SpringbootstudyApplication extends SpringBootServletInitializer {
 	/**
 	 * mybatis分页插件(只支持mysql的)
 	 * @return
@@ -144,5 +146,16 @@ public class SpringbootstudyApplication {
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootstudyApplication.class, args);
+	}
+
+	/**
+	 * 本类,如上继承一个类, 重写下面这个方法, 然后修改maven中的package为war包.
+	 * 然后运行maven的命令package就可以打一个war包了.直接放到tomcat中就可以运行
+	 * @param builder
+	 * @return
+	 */
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(SpringbootstudyApplication.class);
 	}
 }

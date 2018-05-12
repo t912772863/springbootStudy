@@ -3,12 +3,22 @@ package com.tian.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.tian.common.mq.MessageProducer;
 import com.tian.common.other.ResponseData;
+import com.tian.common.util.DocumentUtil;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.jms.Queue;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @RestController 注解整合了@Controller和@ResponseBody, 这样就不用每个返回方法标识返回json了
@@ -19,10 +29,12 @@ import javax.jms.Queue;
 public class TestController {
     @Autowired
     private MessageProducer messageProducer;
+
+    /** 当有多个同一类型的bean时, 通过名字注入*/
     @Resource(name = "testQueue1")
     private Queue queue;
-    @Resource(name = "queue2")
-    private Queue queue2;
+    /** 像这种与业务直接相关的, 也可以不用注解, 直接在这new*/
+    private Queue queue2 = new ActiveMQQueue("queue2");
 
     @RequestMapping("test1")
     public JSONObject test1(String content){
@@ -50,4 +62,57 @@ public class TestController {
         messageProducer.sendMessage(queue2, message);
         return ResponseData.successData.setData("create message success.");
     }
+
+    /**
+     * 查看直接返回中文String是否乱码.
+     * 没有乱码, 后来版本spring修复了这个问题
+     *
+     * @return
+     */
+    @RequestMapping("testReturnString")
+    public String testReturnString(){
+        return "这是中文";
+    }
+
+    /**
+     * 测试异常拦截器
+     * @return
+     */
+    @RequestMapping("testException")
+    public ResponseData testException(){
+        throw new RuntimeException();
+    }
+
+    /**
+     * 测试下载文件, 同时测试没有返回值时,这里默认的@ResponseBody注解是否会有异常.
+     * 没有问题
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    @RequestMapping("testNoReturn")
+    public void testNoReturn(HttpServletRequest request, HttpServletResponse response) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        List list = new ArrayList();
+        OutputStream out = response.getOutputStream();
+
+        String fileName = System.currentTimeMillis()+".xlsx";
+        // 区分是否为ie浏览器,解决中文乱码问题
+        String header = request.getHeader("User-Agent").toUpperCase();
+        if (header.contains("MSIE") || header.contains("TRIDENT") || header.contains("EDGE")) {
+            fileName = URLEncoder.encode(fileName, "utf-8");
+            fileName = fileName.replace("+", "%20");    //IE下载文件名空格变+号问题
+        } else {
+            fileName = new String(fileName.getBytes("utf-8"), "ISO8859-1");
+        }
+
+        // 设置响应头,
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.setContentType("application/octet-stream");
+        String[] strArr = {"手机号", "内容", "时间", "通道编号", "下发端口号"};
+        DocumentUtil.exportExcel(fileName,strArr,list,out,"yyyy-MM-dd HH:mm:ss");
+    }
+
 }

@@ -22,8 +22,19 @@ public class MessageConsumer {
         System.out.println("the message from queueat named 'sample.queue' is "+text);
     }
 
+    /**
+     * spring封闭了对消息的确认机制, 如果处理消息没有出现异常, 则会自动确认(不用我们显式确认).
+     * 在达到指定次数的重试还是失败后, 会把该消息放入到DLQ(death letter queue). 可以在mq的管理页面查看
+     * @param message
+     * @throws JMSException
+     */
     @JmsListener(destination = "queue2")
     public void receiveQueue2(Message message) throws JMSException {
         System.out.println("the message from queue that named 'queue2' is "+((TextMessage)message).getText());
+
+        // 如果这里扰出异常, spring就会进行重试, 一直不成功, 会进入到DLQ
+        if(1== 1){
+            throw new RuntimeException();
+        }
     }
 }

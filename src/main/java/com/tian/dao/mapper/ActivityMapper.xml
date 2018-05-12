@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.dao.mapper.ActivityMapper" >
+  <resultMap id="BaseResultMap" type="com.tian.dao.entity.Activity" >
+    <id column="ID" property="id" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="TIME1" property="time1" jdbcType="TIMESTAMP" />
+    <result column="TIME2" property="time2" jdbcType="TIMESTAMP" />
+    <result column="TIME3" property="time3" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="ACTIVITY_STATUS" property="activityStatus"/>
+    <result column="STATUS" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, ADDRESS, REMARK, CREATE_TIME, TIME1, TIME2, TIME3, UPDATE_TIME, ACTIVITY_STATUS, STATUS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select 
+    <include refid="Base_Column_List" />
+    from activity
+    where ID = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from activity
+    where ID = #{id}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.tian.dao.entity.Activity" >
+    insert into activity
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="time1 != null" >
+        TIME1,
+      </if>
+      <if test="time2 != null" >
+        TIME2,
+      </if>
+      <if test="time3 != null" >
+        TIME3,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="activityStatus != null" >
+        ACTIVITY_STATUS,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="time1 != null" >
+        #{time1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="time2 != null" >
+        #{time2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="time3 != null" >
+        #{time3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityStatus">
+        #{activityStatus},
+      </if>
+      <if test="status != null" >
+        #{status},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tian.dao.entity.Activity" >
+    update activity
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="time1 != null" >
+        TIME1 = #{time1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="time2 != null" >
+        TIME2 = #{time2,jdbcType=TIMESTAMP},
+      </if>
+      <if test="time3 != null" >
+        TIME3 = #{time3,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityStatus != null" >
+        ACTIVITY_STATUS = #{activityStatus},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status},
+      </if>
+    </set>
+    where ID = #{id}
+  </update>
+
+
+  <sql id="queryByPage_where">
+    <where>
+      <if test="params.status != null">
+        and STATUS = #{params.status}
+      </if>
+      <if test="params.startTime != null">
+        <![CDATA[ and CREATE_TIME >= #{params.startTime} ]]>
+      </if>
+      <if test="params.endTime != null">
+        <![CDATA[ and CREATE_TIME <=#{params.endTime} ]]>
+      </if>
+      <if test="params.name != null and params.name != ''">
+        and NAME like concat ('%',#{params.name},'%')
+      </if>
+    </where>
+  </sql>
+
+  <select id="queryByPage" parameterType="com.tian.common.other.PageParam" resultMap="BaseResultMap">
+     select <include refid="Base_Column_List" /> from activity
+     <include refid="queryByPage_where"/>
+     order by CREATE_TIME desc
+  </select>
+
+</mapper>

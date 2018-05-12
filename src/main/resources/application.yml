@@ -1,0 +1,12 @@
+# 这个配置文件是配置spring boot对于actuator控件的配置.
+# actuator可在查看很多服务运行时的一些信息(比如服务信息, 健康情况, ), 具体百度
+management:
+  server:
+    port: 8081
+    address: 127.0.0.1
+  endpoints:
+    web:
+      exposure:
+        include: beans   # 配置可以访问的路径
+        exclude:         # 配置不允许访问的方法
+

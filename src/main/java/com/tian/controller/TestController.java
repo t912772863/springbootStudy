@@ -6,13 +6,21 @@ import com.tian.common.other.ResponseData;
 import com.tian.common.util.DocumentUtil;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.jms.Queue;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +43,12 @@ public class TestController {
     private Queue queue;
     /** 像这种与业务直接相关的, 也可以不用注解, 直接在这new*/
     private Queue queue2 = new ActiveMQQueue("queue2");
+    @Value("${spring.mail.username}")
+    private String username;
+    @Value("${spring.mail.password}")
+    private String password;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @RequestMapping("test1")
     public JSONObject test1(String content){
@@ -113,6 +127,42 @@ public class TestController {
         response.setContentType("application/octet-stream");
         String[] strArr = {"手机号", "内容", "时间", "通道编号", "下发端口号"};
         DocumentUtil.exportExcel(fileName,strArr,list,out,"yyyy-MM-dd HH:mm:ss");
+    }
+
+    /**
+     * 发送普通邮件.
+     * 模版邮件, 其实所谓的模版邮件,就是先把邮件内容存入文件中, 然后读取文件内容,替换掉变量部分
+     * 然后把这个包含html文本的内容当成一个字符串set进Text中.
+     * @return
+     */
+    @RequestMapping("sendSimpleMail")
+    public ResponseData sendSimpleMail(){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(username);
+        message.setTo("13510272496@139.com");
+        message.setSubject("标题：测试标题");
+        // 这里的文本内容是可以包含html标签及样式的, 邮箱会解析加载
+        message.setText("测试内容部份");
+        javaMailSender.send(message);
+        return ResponseData.successData;
+    }
+
+    /**
+     * 发送带有附件的邮件
+     * @return
+     */
+    @RequestMapping("sendMultipartMail")
+    public ResponseData sendMultipartMail() throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+        helper.setFrom(username);
+        helper.setTo("13510272496@139.com");
+        helper.setSubject("标题：测试标题");
+        helper.setText("有附件的邮件");
+        FileSystemResource fileSystemResource = new FileSystemResource(new File("C:\\Users\\Administrator\\Desktop\\临时文件夹\\a.jpg"));
+        helper.addAttachment("a.jpg", fileSystemResource);
+        javaMailSender.send(message);
+        return ResponseData.successData;
     }
 
 }

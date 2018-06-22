@@ -5,6 +5,8 @@ import com.tian.common.other.ResponseData;
 import com.tian.common.validation.Number;
 import com.tian.dao.entity.Activity;
 import com.tian.service.IActivityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,8 @@ import static com.tian.common.other.ResponseData.successData;
 public class ActivityController {
     @Autowired
     private IActivityService activityService;
+
+    private static final Logger log = LoggerFactory.getLogger(ActivityController.class);
 
     /**
      * 新增一个活动
@@ -56,7 +60,10 @@ public class ActivityController {
      */
     @RequestMapping("query_activity_by_id")
     public ResponseData queryActivityById(@Number Long id){
-        return successData.setData(activityService.queryById(id));
+        long startTime = System.currentTimeMillis();
+        ResponseData responseData =  successData.setData(activityService.queryById(id));
+        log.info("=====>use time: "+(System.currentTimeMillis() - startTime));
+        return responseData;
     }
 
     /**

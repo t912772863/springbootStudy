@@ -8,6 +8,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -27,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @RestController 注解整合了@Controller和@ResponseBody, 这样就不用每个返回方法标识返回json了
@@ -49,6 +51,9 @@ public class TestController {
     private String password;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     @RequestMapping("test1")
     public JSONObject test1(String content){
@@ -162,6 +167,23 @@ public class TestController {
         FileSystemResource fileSystemResource = new FileSystemResource(new File("C:\\Users\\Administrator\\Desktop\\临时文件夹\\a.jpg"));
         helper.addAttachment("a.jpg", fileSystemResource);
         javaMailSender.send(message);
+        return ResponseData.successData;
+    }
+
+    /**
+     * 测试springboog带的redis工具类的使用
+     * @return
+     */
+    @RequestMapping("testRedis")
+    public ResponseData testRedis(){
+        redisTemplate.opsForValue().set("key1", "value1",5,TimeUnit.SECONDS);
+        System.out.println(redisTemplate.opsForValue().get("key1"));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(redisTemplate.opsForValue().get("key1"));
         return ResponseData.successData;
     }
 

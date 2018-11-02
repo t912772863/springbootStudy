@@ -61,15 +61,6 @@ public class SpringbootstudyApplication extends SpringBootServletInitializer {
 	}
 
 	/**
-	 * 全局异常处理器
-	 * @return
-	 */
-	@Bean
-	public HandlerExceptionResolver exceptionHandler(){
-		return new DefaultExceptionHandler();
-	}
-
-	/**
 	 * 显式定义这个bean,修改属性,使得可以格式化返回的时间格式,空属性等
 	 * @return
 	 */

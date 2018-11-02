@@ -5,6 +5,7 @@ import com.tian.common.other.BusinessException;
 import com.tian.common.other.ResponseData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * 统一的异常返回处理
  * Created by Administrator on 2016/11/22 0022.
  */
+@Component
 public class DefaultExceptionHandler implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object o, Exception e) {
         ModelAndView mv = new ModelAndView();

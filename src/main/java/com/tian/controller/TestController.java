@@ -2,6 +2,7 @@ package com.tian.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tian.common.mq.MessageProducer;
+import com.tian.common.other.BusinessException;
 import com.tian.common.other.ResponseData;
 import com.tian.common.util.DocumentUtil;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -91,6 +92,18 @@ public class TestController {
     @RequestMapping("testReturnString")
     public String testReturnString(){
         return "这是中文";
+    }
+
+    /**
+     * 测试返回一个业务异常
+     * @return
+     */
+    @RequestMapping("testBizExp")
+    public ResponseData testBizExp(){
+        if(1==1){
+            throw new BusinessException(520,"手动拋出异常");
+        }
+        return ResponseData.failedData;
     }
 
     /**

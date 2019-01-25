@@ -1,7 +1,6 @@
 package com.tian;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tian.common.handler.DefaultExceptionHandler;
 import com.tian.common.handler.PageInterceptor;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
@@ -18,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.jms.Queue;
 import javax.jms.Session;

@@ -36,4 +36,10 @@ public interface IUserService {
      * @return
      */
     User queryUserByMobile(String mobile);
+
+    /**
+     * 根据用户名更新
+     * @param user
+     */
+    void updateByUserId(User user);
 }

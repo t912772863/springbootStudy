@@ -33,4 +33,9 @@ public class UserServiceImpl implements IUserService {
     public User queryUserByMobile(String mobile) {
         return userMapper.queryByMobile(mobile);
     }
+
+    @Override
+    public void updateByUserId(User user) {
+        userMapper.updateByPrimaryKeySelective(user);
+    }
 }

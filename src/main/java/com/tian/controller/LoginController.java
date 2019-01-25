@@ -38,4 +38,16 @@ public class LoginController{
         return "failed";
     }
 
+    /**
+     * 根据id更新
+     * @param user
+     * @return
+     */
+    @RequestMapping("update")
+    @ResponseBody
+    public String update(User user){
+        userService.updateByUserId(user);
+        return "success";
+    }
+
 }

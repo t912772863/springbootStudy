@@ -1,6 +1,5 @@
 package com.tian.common.handler;
 
-import com.tian.common.limit.CheckLimit;
 import com.tian.common.validation.Validate;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -26,7 +25,7 @@ public class LogAspect {
         // 参数有效性验证
         Validate.validate(jp);
         // 接口频率校验
-        CheckLimit.checkLimit(jp);
+//        CheckLimit.checkLimit(jp);
 
         logger.info("====> process in : " + jp.getSignature());
         StringBuffer params = new StringBuffer();

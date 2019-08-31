@@ -7,6 +7,7 @@ import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,7 +42,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
  */
 
 @SpringBootApplication
-//@MapperScan("com.tian.dao.mapper")
+@MapperScan("com.tian.dao.mapper")
 @EnableJms
 @EnableCaching
 //@EnableAspectJAutoProxy
